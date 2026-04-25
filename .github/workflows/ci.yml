@@ -31,3 +31,22 @@ jobs:
 
       - name: push Docker image
         run: docker push daniella2004/docker_with_cloud:latest
+
+  # tu peux ajouter d'autres étapes pour faire des tests, ou pour déployer ton image sur un serveur après l'avoir construite et poussée sur DockerHub
+  deploy:
+    # tu peux aussi utiliser ubuntu-latest si tu n'as pas de serveur dédié pour le déploiement
+    # mais pour l'exemple je vais utiliser un serveur auto-hébergé (mon ordinateur personnel) pour montrer comment tu peux faire le déploiement après la construction de l'image
+    runs-on: self-hosted
+    # pour s'assurer que le job de déploiement ne s'exécute que si le job de construction a réussi,
+    #  on utilise "needs" pour créer une dépendance entre les jobs
+    needs: build
+    steps:
+      - name: pull image from DockerHub
+        run: docker pull daniella2004/docker_with_cloud:latest
+      - name: stop old container
+        run: docker stop docker_with_cloud || true # arrêter le conteneur existant, ignorer les erreurs si le conteneur n'existe pas
+      - name: run new container
+        run: docker run -d --name docker_with_cloud -p 80:80 daniella2004/docker_with_cloud:latest # lancer un nouveau conteneur à partir de l'image construite, en exposant le port 80
+      - name: Deploy to server
+        run: echo "Deploying to server..." # ici tu peux ajouter les commandes pour déployer ton image sur ton serveur
+
