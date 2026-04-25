@@ -44,7 +44,7 @@ jobs:
       - name: pull image from DockerHub
         run: docker pull daniella2004/docker_with_cloud:latest
       - name: stop old container
-        run: docker stop docker_with_cloud 2>$null # arrêter le conteneur existant, ignorer les erreurs si le conteneur n'existe pas
+        run: docker stop docker_with_cloud;exit 0 # arrêter le conteneur existant, ignorer les erreurs si le conteneur n'existe pas
       - name: run new container
         run: docker run -d --name docker_with_cloud -p 80:80 daniella2004/docker_with_cloud:latest # lancer un nouveau conteneur à partir de l'image construite, en exposant le port 80
       - name: Deploy to server
